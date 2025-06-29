@@ -7,11 +7,11 @@ import {
 } from '@react-three/drei'
 import { Suspense, useState, useRef, useEffect } from 'react'
 import * as THREE from 'three'
-import { EXRLoader } from 'three/examples/jsm/loaders/EXRLoader'
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
 
 import SuspensionControl from './SuspensionControl.jsx'
 import CarModel from './CarModel.jsx'
-import studioHDRI from './assets/citrus_orchard_puresky_1k.exr?url'
+import citrusHDR from './assets/citrus_orchard_puresky_1k.hdr?url'
 import ConfiguratorUI from './ConfiguratorUI'
 
 // Loader
@@ -21,16 +21,16 @@ function Loader() {
 }
 
 // EXR Environment
-function EnvironmentEXR({ path }) {
+function EnvironmentHDR({ path }) {
   const { gl, scene } = useThree()
-  const exr = useLoader(EXRLoader, path)
+  const hdr = useLoader(RGBELoader, path)
   const pmrem = new THREE.PMREMGenerator(gl)
-  const envMap = pmrem.fromEquirectangular(exr).texture
+  const envMap = pmrem.fromEquirectangular(hdr).texture
 
   scene.environment = envMap
   scene.background = new THREE.Color('#f2f2f2')
 
-  exr.dispose()
+  hdr.dispose()
   pmrem.dispose()
 
   return null
@@ -95,7 +95,7 @@ export default function App() {
         <Suspense fallback={<Loader />}>
           <CarModel ref={modelRef} suspensionY={suspensionY} useNewWheels={useNewWheels} />
           <FitCameraToModel objectRef={modelRef} />
-          <EnvironmentEXR path={studioHDRI} />
+          <EnvironmentHDR path={citrusHDR} />
           <ambientLight intensity={0.6} />
           <directionalLight
             castShadow
