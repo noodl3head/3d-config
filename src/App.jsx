@@ -74,9 +74,32 @@ export default function App() {
   const [suspensionY, setSuspensionY] = useState(0)
   const [useNewWheels, setUseNewWheels] = useState(false)
   const modelRef = useRef();
+  const [isPortrait, setIsPortrait] = useState(false);
+
+  useEffect(() => {
+    function checkOrientation() {
+      if (window.matchMedia("(orientation: portrait)").matches) {
+        setIsPortrait(true);
+      } else {
+        setIsPortrait(false);
+      }
+    }
+    checkOrientation();
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', checkOrientation);
+    return () => {
+      window.removeEventListener('resize', checkOrientation);
+      window.removeEventListener('orientationchange', checkOrientation);
+    };
+  }, []);
 
   return (
     <>
+      {isPortrait && (
+        <div id="rotate-warning">
+          Please rotate your device to landscape mode for the best experience.
+        </div>
+      )}
       {/* UI Controls */}
       <ConfiguratorUI
         useNewWheels={useNewWheels}
