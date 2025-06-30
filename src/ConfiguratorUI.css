@@ -179,6 +179,19 @@
   .rim-thumbnails {
     gap: 8px;
   }
+  .suspension-slider::-webkit-slider-thumb {
+    width: 40px;
+    height: 40px;
+    margin-top: -16px;
+  }
+  .suspension-slider::-moz-range-thumb {
+    width: 40px;
+    height: 40px;
+  }
+  .suspension-slider::-ms-thumb {
+    width: 40px;
+    height: 40px;
+  }
 }
 
 .slider-track-wrapper,
