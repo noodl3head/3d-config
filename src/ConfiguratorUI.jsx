@@ -8,12 +8,49 @@ export default function ConfiguratorUI({
   setUseNewWheels,
   suspensionY,
   setSuspensionY,
+  showSpoiler,
+  setShowSpoiler,
+  bodyColor,
+  setBodyColor,
+  glassTint,
+  setGlassTint,
 }) {
   // Calculate fill percent for the slider
   const percent = ((suspensionY + 0.25) / 0.5) * 100;
 
+  const colorOptions = ['#00123A', '#F8F3F9', '#0A1204', '#262122'];
+  const tintOptions = ['#bfc5c6', '#5a6a6c', '#23272a'];
+
   return (
     <div className="config-ui">
+      <div className="config-section">
+        <div className="config-title">Color</div>
+        <div className="color-thumbnails">
+          {colorOptions.map((color) => (
+            <button
+              key={color}
+              className={`color-thumb${bodyColor === color ? ' selected' : ''}`}
+              style={{ background: color, border: bodyColor === color ? '2px solid #222' : '2px solid transparent' }}
+              onClick={() => setBodyColor(color)}
+              aria-label={`Select color ${color}`}
+            />
+          ))}
+        </div>
+      </div>
+      <div className="config-section">
+        <div className="config-title">Tint</div>
+        <div className="color-thumbnails">
+          {tintOptions.map((tint) => (
+            <button
+              key={tint}
+              className={`color-thumb${glassTint === tint ? ' selected' : ''}`}
+              style={{ background: tint, border: glassTint === tint ? '2px solid #222' : '2px solid transparent' }}
+              onClick={() => setGlassTint(tint)}
+              aria-label={`Select glass tint ${tint}`}
+            />
+          ))}
+        </div>
+      </div>
       <div className="config-section">
         <div className="config-title">Rims</div>
         <div className="rim-thumbnails">
@@ -54,6 +91,16 @@ export default function ConfiguratorUI({
             <span className="slider-label">Low</span>
             <span className="slider-label">High</span>
           </div>
+        </div>
+      </div>
+      <div className="config-section">
+        <div className="config-title">Accessories</div>
+        <div className="accessory-row">
+          <span className="accessory-label">Spoiler</span>
+          <label className="switch">
+            <input type="checkbox" checked={showSpoiler} onChange={() => setShowSpoiler(v => !v)} />
+            <span className="slider round"></span>
+          </label>
         </div>
       </div>
     </div>

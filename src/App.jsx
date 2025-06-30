@@ -13,6 +13,7 @@ import SuspensionControl from './SuspensionControl.jsx'
 import CarModel from './CarModel.jsx'
 import citrusHDR from './assets/citrus_orchard_puresky_1k.hdr?url'
 import ConfiguratorUI from './ConfiguratorUI'
+import ShadowPlane from './ShadowPlane'
 
 // Loader
 function Loader() {
@@ -34,20 +35,6 @@ function EnvironmentHDR({ path }) {
   pmrem.dispose()
 
   return null
-}
-
-// Ground Shadow
-function ShadowPlane() {
-  return (
-    <mesh
-      rotation={[-Math.PI / 2, 0, 0]}
-      position={[0, -0.01, 0]}
-      receiveShadow
-    >
-      <planeGeometry args={[100, 100]} />
-      <shadowMaterial opacity={0.35} transparent />
-    </mesh>
-  )
 }
 
 function FitCameraToModel({ objectRef, margin = 1.2 }) {
@@ -73,6 +60,9 @@ function FitCameraToModel({ objectRef, margin = 1.2 }) {
 export default function App() {
   const [suspensionY, setSuspensionY] = useState(0)
   const [useNewWheels, setUseNewWheels] = useState(false)
+  const [showSpoiler, setShowSpoiler] = useState(true)
+  const [bodyColor, setBodyColor] = useState('#00123A')
+  const [glassTint, setGlassTint] = useState('#bfc5c6')
   const modelRef = useRef();
   const [isPortrait, setIsPortrait] = useState(false);
 
@@ -106,6 +96,12 @@ export default function App() {
         setUseNewWheels={setUseNewWheels}
         suspensionY={suspensionY}
         setSuspensionY={setSuspensionY}
+        showSpoiler={showSpoiler}
+        setShowSpoiler={setShowSpoiler}
+        bodyColor={bodyColor}
+        setBodyColor={setBodyColor}
+        glassTint={glassTint}
+        setGlassTint={setGlassTint}
       />
 
       {/* 3D Canvas */}
@@ -116,14 +112,14 @@ export default function App() {
         gl={{ toneMapping: THREE.ACESFilmicToneMapping }}
       >
         <Suspense fallback={<Loader />}>
-          <CarModel ref={modelRef} suspensionY={suspensionY} useNewWheels={useNewWheels} />
+          <CarModel ref={modelRef} suspensionY={suspensionY} useNewWheels={useNewWheels} showSpoiler={showSpoiler} bodyColor={bodyColor} glassTint={glassTint} />
           <FitCameraToModel objectRef={modelRef} />
           <EnvironmentHDR path={citrusHDR} />
           <ambientLight intensity={0.6} />
           <directionalLight
             castShadow
             position={[5, 10, 5]}
-            intensity={0.2}
+            intensity={1}
             shadow-mapSize-width={2048}
             shadow-mapSize-height={2048}
             shadow-camera-far={50}
@@ -139,8 +135,6 @@ export default function App() {
           target={[0, 4, 0]}
           minPolarAngle={Math.PI / 2}
           maxPolarAngle={Math.PI / 2}
-          minAzimuthAngle={-Math.PI / 4}
-          maxAzimuthAngle={Math.PI / 4}
           enableZoom={false}
           enablePan={false}
         />
