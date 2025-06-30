@@ -8,7 +8,8 @@ export default function CarModel({ suspensionY = 0, useNewWheels = false, showSp
   const wrapperRef = useRef()
   const wheelSet1Ref = useRef()
   const wheelSet2Ref = useRef()
-  const bodyGroupRef = useRef(new THREE.Group())
+  const bodyGroupRef = useRef()
+  const glassGroupRef = useRef()
   const spoilerRef = useRef()
   const [sceneReady, setSceneReady] = useState(false)
 
@@ -22,6 +23,7 @@ export default function CarModel({ suspensionY = 0, useNewWheels = false, showSp
     const wrapper = new THREE.Group()
     let spoilerObjects = [];
     let bodyGroup = null;
+    let glassGroup = null;
     let wheelSet1 = null;
     let wheelSet2 = null;
     // Log full hierarchy once
@@ -31,6 +33,10 @@ export default function CarModel({ suspensionY = 0, useNewWheels = false, showSp
       if (obj.name && obj.name.toLowerCase() === 'body') {
         bodyGroup = obj;
         bodyGroupRef.current = bodyGroup;
+      }
+      if (obj.name && obj.name.toLowerCase() === 'glass') {
+        glassGroup = obj;
+        glassGroupRef.current = glassGroup;
       }
       if (obj.name && obj.name.toLowerCase() === 'spoiler') {
         spoilerObjects.push(obj);
@@ -92,11 +98,8 @@ export default function CarModel({ suspensionY = 0, useNewWheels = false, showSp
   useEffect(() => {
     if (!sceneReady) return
     const clampedY = Math.max(-0.25, Math.min(0.25, suspensionY))
-    if (bodyGroupRef.current) {
-      bodyGroupRef.current.position.y = clampedY
-      console.log('Body group y-position:', bodyGroupRef.current.position.y)
-    }
-  }, [suspensionY, sceneReady])
+    if (bodyGroupRef.current) bodyGroupRef.current.position.y = clampedY;
+  }, [suspensionY, sceneReady]);
 
   useEffect(() => {
     if (!sceneReady) return;
