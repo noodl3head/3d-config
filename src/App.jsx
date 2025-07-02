@@ -4,16 +4,30 @@ import {
   Html,
   useProgress,
   ContactShadows,
+  Environment
 } from '@react-three/drei'
 import { Suspense, useState, useRef, useEffect } from 'react'
 import * as THREE from 'three'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
+import { EffectComposer, Bloom, ToneMapping, FXAA, BrightnessContrast, HueSaturation,} from '@react-three/postprocessing'
+import { BlendFunction, ToneMappingMode } from 'postprocessing'
 
 import SuspensionControl from './SuspensionControl.jsx'
 import CarModel from './CarModel.jsx'
 import citrusHDR from './assets/citrus_orchard_puresky_1k.hdr?url'
 import ConfiguratorUI from './ConfiguratorUI'
 import ShadowPlane from './ShadowPlane'
+import emptyWarehouseHDR from './assets/zwartkops_straight_morning_4k.hdr'
+import React from 'react';
+
+// Helper to force white background every frame
+function ForceWhiteBackground() {
+  const { scene } = useThree();
+  useEffect(() => {
+    scene.background = new THREE.Color('#ffffff');
+  });
+  return null;
+}
 
 // Loader
 function Loader() {
@@ -29,7 +43,7 @@ function EnvironmentHDR({ path }) {
   const envMap = pmrem.fromEquirectangular(hdr).texture
 
   scene.environment = envMap
-  scene.background = new THREE.Color('#f2f2f2')
+  scene.background = new THREE.Color('#ffffff')
 
   hdr.dispose()
   pmrem.dispose()
@@ -53,6 +67,15 @@ function FitCameraToModel({ objectRef, margin = 1.2 }) {
     camera.aspect = size.width / size.height;
     camera.updateProjectionMatrix();
   }, [objectRef, camera, size, margin]);
+  return null;
+}
+
+// Helper to set renderer exposure reliably
+function SetExposure({ value }) {
+  const { gl } = useThree();
+  useEffect(() => {
+    gl.toneMappingExposure = value;
+  }, [gl, value]);
   return null;
 }
 
@@ -109,27 +132,58 @@ export default function App() {
         style={{ width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0 }}
         shadows
         camera={{ position: [-27, 5, 5], fov: 35 }}
-        gl={{ toneMapping: THREE.ACESFilmicToneMapping }}
+        gl={{ toneMapping: THREE.ACESFilmicToneMapping, outputColorSpace: THREE.SRGBColorSpace }}
       >
+        <SetExposure value={0.8} />
+        <color attach="background" args={["#ffffff"]} />
         <Suspense fallback={<Loader />}>
-          <CarModel ref={modelRef} suspensionY={suspensionY} useNewWheels={useNewWheels} showSpoiler={showSpoiler} bodyColor={bodyColor} glassTint={glassTint} />
+          <CarModel
+            key={`${bodyColor}-${glassTint}-${useNewWheels}-${showSpoiler}-${suspensionY}`}
+            ref={modelRef}
+            suspensionY={suspensionY}
+            useNewWheels={useNewWheels}
+            showSpoiler={showSpoiler}
+            bodyColor={bodyColor}
+            glassTint={glassTint}
+          />
           <FitCameraToModel objectRef={modelRef} />
-          <EnvironmentHDR path={citrusHDR} />
-          <ambientLight intensity={0.6} />
+          <Environment files={citrusHDR} background={false} intensity={1.5} />
+          <ForceWhiteBackground />
+
+          {/* Product-style lighting setup - balanced for realism */}
+          {/* Key Light (soft, from front/side) */}
           <directionalLight
+            position={[10, 20, 10]}
+            intensity={1.2}
             castShadow
-            position={[5, 10, 5]}
-            intensity={1}
             shadow-mapSize-width={2048}
             shadow-mapSize-height={2048}
-            shadow-camera-far={50}
-            shadow-camera-left={-10}
-            shadow-camera-right={10}
-            shadow-camera-top={10}
-            shadow-camera-bottom={-10}
+            shadow-camera-far={100}
+            shadow-camera-left={-30}
+            shadow-camera-right={30}
+            shadow-camera-top={30}
+            shadow-camera-bottom={-30}
+            color="#fff"
           />
+          {/* Fill Light (opposite side, softer) */}
+          <directionalLight
+            position={[-15, 10, -10]}
+            intensity={0.4}
+            color="#e0e6ff"
+          />
+          {/* Rim Light (from behind, to create edge highlights) */}
+          <directionalLight
+            position={[0, 15, -25]}
+            intensity={0.6}
+            color="#b0c4ff"
+          />
+          {/* Soft ambient light for subtle fill */}
+          <ambientLight intensity={0.2} color="#fff" />
+
           <ShadowPlane />
         </Suspense>
+
+
 
         <OrbitControls
           target={[0, 4, 0]}

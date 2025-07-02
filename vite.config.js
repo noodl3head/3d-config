@@ -3,5 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  assetsInclude: ['**/*.exr'], // 👈 Add this line
+  assetsInclude: ['**/*.exr' , '**/*.hdr'], // 👈 Add this line
 })

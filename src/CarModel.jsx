@@ -1,22 +1,14 @@
 import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
-import { useMemo, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export default function CarModel({ suspensionY = 0, useNewWheels = false, showSpoiler = true, bodyColor = '#548AE7', glassTint = '#bfc5c6' }) {
   const gltf = useGLTF('/bmw_m3.glb')
 
   const wrapperRef = useRef()
-  const wheelSet1Ref = useRef()
-  const wheelSet2Ref = useRef()
-  const bodyGroupRef = useRef()
-  const glassGroupRef = useRef()
-  const spoilerRef = useRef()
   const [sceneReady, setSceneReady] = useState(false)
 
   useEffect(() => {
-    console.log('GLTF:', gltf)
-    console.log('gltf.scene:', gltf.scene)
-    console.log('gltf.scene.clone:', gltf.scene?.clone)
     if (!gltf?.scene || typeof gltf.scene.clone !== 'function' || typeof gltf.scene.traverse !== 'function') return
 
     const cloned = gltf.scene.clone(true)
@@ -26,160 +18,164 @@ export default function CarModel({ suspensionY = 0, useNewWheels = false, showSp
     let glassGroup = null;
     let wheelSet1 = null;
     let wheelSet2 = null;
-    // Log full hierarchy once
-    console.log('🔍 SCENE HIERARCHY:')
+
     cloned.traverse((obj) => {
-      console.log('-', obj.name)
       if (obj.name && obj.name.toLowerCase() === 'body') {
         bodyGroup = obj;
-        bodyGroupRef.current = bodyGroup;
       }
       if (obj.name && obj.name.toLowerCase() === 'glass') {
         glassGroup = obj;
-        glassGroupRef.current = glassGroup;
       }
       if (obj.name && obj.name.toLowerCase() === 'spoiler') {
         spoilerObjects.push(obj);
-        console.log('Found Spoiler (anywhere):', obj.name, 'Initial visible:', obj.visible);
       }
       if (obj.name && obj.name.toLowerCase() === 'wheel_set_1') {
         wheelSet1 = obj;
-        wheelSet1Ref.current = wheelSet1;
-        console.log('Found Wheel_set_1:', obj.name);
       }
       if (obj.name && obj.name.toLowerCase() === 'wheel_set_2') {
         wheelSet2 = obj;
-        wheelSet2Ref.current = wheelSet2;
-        console.log('Found Wheel_set_2:', obj.name);
       }
       if (obj.isMesh) {
         obj.castShadow = true;
         obj.receiveShadow = true;
-        obj.material = obj.material.clone();
+        if (obj.material) {
+          if (Array.isArray(obj.material)) {
+            obj.material = obj.material.map(mat => {
+              if (mat.name && mat.name.toLowerCase() === 'body-paint') {
+                return new THREE.MeshPhysicalMaterial({
+                  color: bodyColor,
+                  metalness: 1.0,
+                  roughness: 0.2,
+                  clearcoat: 1.0,
+                  clearcoatRoughness: 0.05,
+                  reflectivity: 1.0,
+                  sheen: 1.0,
+                  envMapIntensity: 1.5,
+                  name: 'body-paint',
+                });
+              } else if (mat.name && mat.name.toLowerCase() === 'glass') {
+                return new THREE.MeshPhysicalMaterial({
+                  color: glassTint,
+                  metalness: 0.0,
+                  roughness: 0.01,
+                  transmission: 1.0,
+                  thickness: 0.1,
+                  ior: 1.5,
+                  transparent: true,
+                  opacity: 1.0,
+                  envMapIntensity: 1.0,
+                  name: 'glass',
+                });
+              } else if (mat.name && mat.name.toLowerCase() === 'emission-white') {
+                return new THREE.MeshPhysicalMaterial({
+                  color: '#ffffff',
+                  emissive: '#ffffff',
+                  emissiveIntensity: 20,
+                  metalness: 0.1,
+                  roughness: 0.15,
+                  transmission: 0.5,
+                  transparent: false,
+                  opacity: 1.0,
+                  envMapIntensity: 1.5,
+                  name: 'emission-white',
+                });
+              } else if (mat.name && mat.name.toLowerCase() === 'blinn2.001') {
+                return new THREE.MeshPhysicalMaterial({
+                  color: '#ffffff',
+                  metalness: 0.0,
+                  roughness: 0.05,
+                  transmission: 1.0,
+                  thickness: 0.2,
+                  ior: 1.5,
+                  transparent: true,
+                  opacity: 0.15,
+                  envMapIntensity: 1.5,
+                  name: 'blinn2.001',
+                });
+              } else {
+                return mat.clone();
+              }
+            });
+          } else if (obj.material.name && obj.material.name.toLowerCase() === 'body-paint') {
+            obj.material = new THREE.MeshPhysicalMaterial({
+              color: bodyColor,
+              metalness: 1.0,
+              roughness: 0.2,
+              clearcoat: 1.0,
+              clearcoatRoughness: 0.05,
+              reflectivity: 1.0,
+              sheen: 1.0,
+              envMapIntensity: 1.5,
+              name: 'body-paint',
+            });
+          } else if (obj.material.name && obj.material.name.toLowerCase() === 'glass') {
+            obj.material = new THREE.MeshPhysicalMaterial({
+              color: glassTint,
+              metalness: 0.0,
+              roughness: 0.01,
+              transmission: 1.0,
+              thickness: 0.1,
+              ior: 1.5,
+              transparent: true,
+              opacity: 1.0,
+              envMapIntensity: 1.0,
+              name: 'glass',
+            });
+          } else if (obj.material.name && obj.material.name.toLowerCase() === 'emission-white') {
+            obj.material = new THREE.MeshPhysicalMaterial({
+              color: 0xffffff,
+              emissive: '#aeefff',
+              emissiveIntensity: 50.0,
+              metalness: 0.1,
+              roughness: 0.15,
+              transmission: 0.5,
+              transparent: false,
+              opacity: 1.0,
+              envMapIntensity: 1.5,
+              name: 'emission-white',
+            });
+          } else if (obj.material.name && obj.material.name.toLowerCase() === 'blinn2.001') {
+            obj.material = new THREE.MeshPhysicalMaterial({
+              color: '#ffffff',
+              metalness: 0.0,
+              roughness: 0.05,
+              transmission: 1.0,
+              thickness: 0.2,
+              ior: 1.5,
+              transparent: true,
+              opacity: 0.15,
+              envMapIntensity: 1.5,
+              name: 'blinn2.001',
+            });
+          } else {
+            obj.material = obj.material.clone();
+          }
+        }
       }
-    })
-    spoilerRef.current = spoilerObjects;
-    wrapper.add(cloned);
-    wrapperRef.current = wrapper;
-    setSceneReady(true)
-  }, [gltf])
+    });
 
-  // Handle toggle between wheel sets
-  useEffect(() => {
-    if (!sceneReady) return;
-    // Toggle wheel sets
-    if (wheelSet1Ref.current && wheelSet2Ref.current) {
-      wheelSet1Ref.current.visible = !useNewWheels;
-      wheelSet2Ref.current.visible = useNewWheels;
-      console.log('Wheel_set_1 visible:', wheelSet1Ref.current.visible, '| Wheel_set_2 visible:', wheelSet2Ref.current.visible);
+    // Apply ride height
+    if (bodyGroup) bodyGroup.position.y = Math.max(-0.25, Math.min(0.25, suspensionY));
+
+    // Handle wheel sets
+    if (wheelSet1 && wheelSet2) {
+      wheelSet1.visible = !useNewWheels;
+      wheelSet2.visible = useNewWheels;
     }
-  }, [useNewWheels, sceneReady]);
 
-  // Handle spoiler visibility
-  useEffect(() => {
-    if (!sceneReady || !spoilerRef.current) return;
-    // Toggle spoiler visibility
-    spoilerRef.current.forEach((spoilerObj, idx) => {
-      let parentNames = [];
-      let parent = spoilerObj.parent;
-      while (parent) {
-        parentNames.push(parent.name || '(no name)');
-        parent = parent.parent;
-      }
-      console.log(`Toggling Spoiler[${idx}] (${spoilerObj.name}) visibility to:`, !!showSpoiler, '| Current visible:', spoilerObj.visible, '| Parent chain:', parentNames.join(' -> '));
+    // Handle spoiler visibility
+    spoilerObjects.forEach((spoilerObj) => {
       spoilerObj.visible = !!showSpoiler;
       spoilerObj.traverse(child => {
         child.visible = !!showSpoiler;
       });
     });
-  }, [showSpoiler, sceneReady]);
 
-  // Update suspension height
-  useEffect(() => {
-    if (!sceneReady) return
-    const clampedY = Math.max(-0.25, Math.min(0.25, suspensionY))
-    if (bodyGroupRef.current) bodyGroupRef.current.position.y = clampedY;
-  }, [suspensionY, sceneReady]);
+    wrapper.add(cloned);
+    wrapperRef.current = wrapper;
+    setSceneReady(true);
+  }, [gltf, bodyColor, glassTint, useNewWheels, showSpoiler, suspensionY]);
 
-  useEffect(() => {
-    if (!sceneReady) return;
-    // Find and update the 'body-paint' material color
-    let found = false;
-    wrapperRef.current.traverse((obj) => {
-      if (obj.material) {
-        if (Array.isArray(obj.material)) {
-          obj.material.forEach(mat => {
-            if (mat.name && mat.name.toLowerCase() === 'body-paint') {
-              mat.color.set(bodyColor);
-              found = true;
-            }
-          });
-        } else if (obj.material.name && obj.material.name.toLowerCase() === 'body-paint') {
-          obj.material.color.set(bodyColor);
-          found = true;
-        }
-      }
-    });
-    if (!found) {
-      console.warn('No material named "body-paint" found in model.');
-    }
-  }, [bodyColor, sceneReady]);
-
-  useEffect(() => {
-    if (!sceneReady) return;
-    wrapperRef.current.traverse((obj) => {
-      if (obj.material) {
-        if (Array.isArray(obj.material)) {
-          obj.material.forEach(mat => {
-            if (mat.name && mat.name.toLowerCase() === 'blinn2.001') {
-              mat.transparent = true;
-              mat.opacity = 0.1
-              mat.metalness = 0.7;
-              mat.roughness = 0.05;
-              mat.color.set('#f5f5f5');
-              mat.envMapIntensity = 1.5;
-              mat.needsUpdate = true;
-            }
-          });
-        } else if (obj.material.name && obj.material.name.toLowerCase() === 'blinn2.001') {
-          obj.material.transparent = true;
-          obj.material.opacity = 0.4;
-          obj.material.metalness = 0.8;
-          obj.material.roughness = 0.02;
-          obj.material.color.set('#2D2D2D');
-          obj.material.envMapIntensity = 3;
-          obj.material.needsUpdate = true;
-        }
-      }
-    });
-  }, [sceneReady]);
-
-  useEffect(() => {
-    if (!sceneReady) return;
-    // Find and update the 'Glass' material color
-    let found = false;
-    wrapperRef.current.traverse((obj) => {
-      if (obj.material) {
-        if (Array.isArray(obj.material)) {
-          obj.material.forEach(mat => {
-            if (mat.name && mat.name.toLowerCase() === 'glass') {
-              mat.color.set(glassTint);
-              found = true;
-              mat.needsUpdate = true;
-            }
-          });
-        } else if (obj.material.name && obj.material.name.toLowerCase() === 'glass') {
-          obj.material.color.set(glassTint);
-          found = true;
-          obj.material.needsUpdate = true;
-        }
-      }
-    });
-    if (!found) {
-      console.warn('No material named "Glass" found in model.');
-    }
-  }, [glassTint, sceneReady]);
-
-  if (!sceneReady || !wrapperRef.current) return null
-  return <primitive object={wrapperRef.current} />
+  if (!sceneReady || !wrapperRef.current) return null;
+  return <primitive object={wrapperRef.current} />;
 }
