@@ -25,11 +25,11 @@ export default function ConfiguratorUI({
     <div className="config-ui">
       <div className="config-section">
         <div className="config-title">Color</div>
-        <div className="color-thumbnails">
+        <div className="color-thumbnails grid">
           {colorOptions.map((color) => (
             <button
               key={color}
-              className={`color-thumb${bodyColor === color ? ' selected' : ''}`}
+              className={`color-thumb grid${bodyColor === color ? ' selected' : ''}`}
               style={{ background: color, border: bodyColor === color ? '2px solid #222' : '2px solid transparent' }}
               onClick={() => setBodyColor(color)}
               aria-label={`Select color ${color}`}
@@ -39,11 +39,11 @@ export default function ConfiguratorUI({
       </div>
       <div className="config-section">
         <div className="config-title">Tint</div>
-        <div className="color-thumbnails">
+        <div className="color-thumbnails grid">
           {tintOptions.map((tint) => (
             <button
               key={tint}
-              className={`color-thumb${glassTint === tint ? ' selected' : ''}`}
+              className={`color-thumb grid${glassTint === tint ? ' selected' : ''}`}
               style={{ background: tint, border: glassTint === tint ? '2px solid #222' : '2px solid transparent' }}
               onClick={() => setGlassTint(tint)}
               aria-label={`Select glass tint ${tint}`}
@@ -53,16 +53,16 @@ export default function ConfiguratorUI({
       </div>
       <div className="config-section">
         <div className="config-title">Rims</div>
-        <div className="rim-thumbnails">
+        <div className="rim-thumbnails grid">
           <button
-            className={`rim-thumb ${!useNewWheels ? 'selected' : ''}`}
+            className={`rim-thumb grid ${!useNewWheels ? 'selected' : ''}`}
             onClick={() => setUseNewWheels(false)}
             aria-label="Rim 1"
           >
             <img src={rim1} alt="Rim 1" />
           </button>
           <button
-            className={`rim-thumb ${useNewWheels ? 'selected' : ''}`}
+            className={`rim-thumb grid ${useNewWheels ? 'selected' : ''}`}
             onClick={() => setUseNewWheels(true)}
             aria-label="Rim 2"
           >

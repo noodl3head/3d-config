@@ -1,0 +1,161 @@
+.config-menu-bar {
+  position: fixed;
+  top: 20px;
+  left: 22px;
+  z-index: 2000;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 22px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 16px;
+  gap: 18px;
+  max-height: 100vh;
+  overflow-y: auto;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.config-menu-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-placeholder {
+  width: 48px;
+  height: 48px;
+  background: #F6F6F6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.config-menu-divider {
+  width: 60%;
+  height: 1px;
+  background: #ddd;
+  margin: 12px 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}
+
+.popup-panel {
+  position: fixed;
+  top: 16px;
+  left: 110px !important;
+  width: fit-content;
+  max-width: 95vw;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 22px rgba(0,0,0,0.10);
+  padding: 20px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 2100;
+}
+
+.popup-title {
+  font-family: 'Inter';
+  font-size: 16px !important;
+  font-weight: 400;
+  color: #000;
+  margin-bottom: 18px !important;
+}
+
+.color-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #eee;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  box-sizing: border-box;
+}
+
+.color-circle.selected {
+  width: inherit;
+  height: inherit;
+  border: 2px double #000;
+  box-shadow: none;
+}
+
+.config-menu-item.selected .icon-placeholder {
+  background: #EBEBEB !important;
+  /* No border or stroke */
+}
+
+.rim-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #eee;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow 0.2s, border 0.2s;
+}
+
+.rim-thumb.selected {
+  border: 2px solid #fff !important;
+  box-shadow: 0 0 0 3px #A2A2A2;
+}
+
+.rim-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+@media (max-width: 1024px) {
+  .config-menu-bar {
+    top: 0 !important;
+    left: 0 !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 0 12px 0 !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 16px !important;
+    padding-bottom: 16px !important;
+  }
+  .popup-panel {
+    position: fixed;
+    top: 16px;
+    left: 90px !important;
+    width: auto !important;
+    max-width: 95vw;
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    border-radius: 12px;
+    right: unset;
+  }
+}
+
+.color-options,
+.tint-options,
+.rim-options {
+  display: grid !important;
+  grid-template-columns: repeat(2, auto) !important;
+  gap: 12px !important;
+  padding-top: 10% !important;
+}

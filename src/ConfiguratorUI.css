@@ -292,4 +292,67 @@ input:checked + .slider:before {
 }
 .slider.round {
   border-radius: 24px;
+}
+
+.color-thumbnails.grid, .rim-thumbnails.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  align-items: center;
+  justify-items: start;
+  margin-left: 0;
+}
+
+.color-thumb.grid, .rim-thumb.grid {
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.rim-thumb.grid img {
+  width: 32px;
+  height: 32px;
+}
+
+/* Remove vertical-specific styles for these sections */
+.color-thumbnails.vertical, .rim-thumbnails.vertical,
+.color-thumb.vertical, .rim-thumb.vertical {
+  all: unset;
+}
+
+.color-label, .rim-label {
+  margin-left: 10px;
+  font-size: 14px;
+  color: #333;
+  font-weight: 400;
+  vertical-align: middle;
+}
+
+.tray-toggle-btn {
+  background: #222;
+  border: none;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  font-size: 28px;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, box-shadow 0.2s;
+  outline: none;
+  padding: 0;
+}
+.tray-toggle-btn:hover {
+  background: #444;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.16);
+}
+
+.tray-container {
+  /* Already styled inline in App.jsx, but you can add more here if needed */
 } 
