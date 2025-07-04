@@ -78,20 +78,32 @@
   margin-bottom: 18px !important;
 }
 
-.color-circle {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #eee;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
-  box-sizing: border-box;
+.color-circle,
+.rim-thumb,
+.spoiler-options .color-circle {
+  width: 40px !important;
+  height: 40px !important;
+  box-sizing: border-box !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
-.color-circle.selected {
-  width: inherit;
-  height: inherit;
-  border: 2px double #000;
-  box-shadow: none;
+.color-circle.selected,
+.spoiler-options .color-circle.selected {
+  width: 40px !important;
+  height: 40px !important;
+  box-sizing: border-box !important;
+  border-radius: 50% !important;
+}
+
+.color-circle svg,
+.spoiler-options .color-circle svg {
+  width: 32px !important;
+  height: 32px !important;
+  max-width: 90%;
+  max-height: 90%;
 }
 
 .config-menu-item.selected .icon-placeholder {
@@ -120,8 +132,10 @@
 }
 
 .rim-thumb img {
-  width: 100%;
-  height: 100%;
+  width: 32px !important;
+  height: 32px !important;
+  max-width: 90%;
+  max-height: 90%;
   object-fit: contain;
   display: block;
 }
@@ -155,7 +169,8 @@
 
 .color-options,
 .tint-options,
-.rim-options {
+.rim-options,
+.spoiler-options {
   display: grid !important;
   grid-template-columns: repeat(2, auto) !important;
   gap: 12px !important;
