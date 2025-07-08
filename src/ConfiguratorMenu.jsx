@@ -3,6 +3,7 @@ import './ConfiguratorMenu.css';
 import { BodyColorIcon, TintIcon, RimsIcon, RideHeightIcon, SpoilerIcon, HideSpoilerIcon, Spoiler1Icon } from './SVGIcons';
 import rim1 from './assets/rim1.png';
 import rim2 from './assets/rim2.png';
+import rim3 from './assets/rim3.png';
 
 function isDark(color) {
   if (!color) return false;
@@ -105,30 +106,40 @@ function RideHeightPopup({ suspensionY, setSuspensionY, popupTop, ref }) {
   );
 }
 
-function RimsPopup({ useNewWheels, setUseNewWheels, popupTop, ref }) {
+function RimsPopup({ wheelSetIndex, setWheelSetIndex, popupTop, ref }) {
   return (
     <div className="popup-panel" style={{ top: popupTop, left: 90 }} ref={ref}>
       <div className="popup-title">Rims</div>
       <div className="rim-options">
         <div
-          className={`rim-thumb${!useNewWheels ? ' selected' : ''}`}
+          className={`rim-thumb${wheelSetIndex === 0 ? ' selected' : ''}`}
           style={{
-            border: !useNewWheels ? '2px solid #fff' : 'none',
-            boxShadow: !useNewWheels ? '0 0 0 3px #A2A2A2' : 'none',
+            border: wheelSetIndex === 0 ? '2px solid #fff' : 'none',
+            boxShadow: wheelSetIndex === 0 ? '0 0 0 3px #A2A2A2' : 'none',
           }}
-          onClick={() => setUseNewWheels(false)}
+          onClick={() => setWheelSetIndex(0)}
         >
           <img src={rim1} alt="Rim 1" />
         </div>
         <div
-          className={`rim-thumb${useNewWheels ? ' selected' : ''}`}
+          className={`rim-thumb${wheelSetIndex === 1 ? ' selected' : ''}`}
           style={{
-            border: useNewWheels ? '2px solid #fff' : 'none',
-            boxShadow: useNewWheels ? '0 0 0 3px #A2A2A2' : 'none',
+            border: wheelSetIndex === 1 ? '2px solid #fff' : 'none',
+            boxShadow: wheelSetIndex === 1 ? '0 0 0 3px #A2A2A2' : 'none',
           }}
-          onClick={() => setUseNewWheels(true)}
+          onClick={() => setWheelSetIndex(1)}
         >
           <img src={rim2} alt="Rim 2" />
+        </div>
+        <div
+          className={`rim-thumb${wheelSetIndex === 2 ? ' selected' : ''}`}
+          style={{
+            border: wheelSetIndex === 2 ? '2px solid #fff' : 'none',
+            boxShadow: wheelSetIndex === 2 ? '0 0 0 3px #A2A2A2' : 'none',
+          }}
+          onClick={() => setWheelSetIndex(2)}
+        >
+          <img src={rim3} alt="Rim 3" />
         </div>
       </div>
     </div>
@@ -175,7 +186,7 @@ const MENU_ITEMS = [
   { key: 'spoiler', label: 'Spoiler', icon: <SpoilerIcon width={32} height={32} /> },
 ];
 
-export default function ConfiguratorMenu({ bodyColor, setBodyColor, useNewWheels, setUseNewWheels, glassTint, setGlassTint, suspensionY, setSuspensionY, showSpoiler, setShowSpoiler, appContainerRef }) {
+export default function ConfiguratorMenu({ bodyColor, setBodyColor, wheelSetIndex, setWheelSetIndex, glassTint, setGlassTint, suspensionY, setSuspensionY, showSpoiler, setShowSpoiler, appContainerRef }) {
   const [selected, setSelected] = useState(null);
   const itemRefs = useRef([]);
   const [popupTop, setPopupTop] = useState(24);
@@ -237,7 +248,7 @@ export default function ConfiguratorMenu({ bodyColor, setBodyColor, useNewWheels
       </div>
       {selected === 'bodyColor' && renderPopup(<BodyColorPopup bodyColor={bodyColor} setBodyColor={setBodyColor} />)}
       {selected === 'tint' && renderPopup(<TintPopup glassTint={glassTint} setGlassTint={setGlassTint} />)}
-      {selected === 'rims' && renderPopup(<RimsPopup useNewWheels={useNewWheels} setUseNewWheels={setUseNewWheels} />)}
+      {selected === 'rims' && renderPopup(<RimsPopup wheelSetIndex={wheelSetIndex} setWheelSetIndex={setWheelSetIndex} />)}
       {selected === 'rideHeight' && renderPopup(<RideHeightPopup suspensionY={suspensionY} setSuspensionY={setSuspensionY} />)}
       {selected === 'spoiler' && renderPopup(<SpoilerPopup showSpoiler={showSpoiler} setShowSpoiler={setShowSpoiler} />)}
     </>

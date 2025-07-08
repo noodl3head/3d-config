@@ -275,10 +275,16 @@
 
 .color-options,
 .tint-options,
-.rim-options,
 .spoiler-options {
   display: grid !important;
   grid-template-columns: repeat(2, auto) !important;
+  gap: 12px !important;
+  padding-top: 10% !important;
+}
+
+.rim-options {
+  display: grid !important;
+  grid-template-columns: repeat(3, auto) !important;
   gap: 12px !important;
   padding-top: 10% !important;
 }

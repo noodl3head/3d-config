@@ -79,7 +79,7 @@ function SetExposure({ value }) {
 // ✅ MAIN APP (Only One!)
 export default function App() {
   const [suspensionY, setSuspensionY] = useState(0)
-  const [useNewWheels, setUseNewWheels] = useState(false)
+  const [wheelSetIndex, setWheelSetIndex] = useState(0)
   const [showSpoiler, setShowSpoiler] = useState(true)
   const [bodyColor, setBodyColor] = useState('#00123A')
   const [glassTint, setGlassTint] = useState('#bfc5c6')
@@ -119,7 +119,7 @@ export default function App() {
         )}
         <ConfiguratorMenu 
           bodyColor={bodyColor} setBodyColor={setBodyColor}
-          useNewWheels={useNewWheels} setUseNewWheels={setUseNewWheels}
+          wheelSetIndex={wheelSetIndex} setWheelSetIndex={setWheelSetIndex}
           glassTint={glassTint} setGlassTint={setGlassTint}
           suspensionY={suspensionY} setSuspensionY={setSuspensionY}
           showSpoiler={showSpoiler} setShowSpoiler={setShowSpoiler}
@@ -135,10 +135,10 @@ export default function App() {
           <color attach="background" args={["#ffffff"]} />
           <Suspense fallback={<Loader />}>
             <CarModel
-              key={`${bodyColor}-${glassTint}-${useNewWheels}-${showSpoiler}-${suspensionY}`}
+              key={`${bodyColor}-${glassTint}-${wheelSetIndex}-${showSpoiler}-${suspensionY}`}
               ref={modelRef}
               suspensionY={suspensionY}
-              useNewWheels={useNewWheels}
+              wheelSetIndex={wheelSetIndex}
               showSpoiler={showSpoiler}
               bodyColor={bodyColor}
               glassTint={glassTint}

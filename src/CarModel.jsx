@@ -2,7 +2,7 @@ import { useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { useEffect, useRef, useState } from 'react'
 
-export default function CarModel({ suspensionY = 0, useNewWheels = false, showSpoiler = true, bodyColor = '#548AE7', glassTint = '#bfc5c6' }) {
+export default function CarModel({ suspensionY = 0, wheelSetIndex = 0, showSpoiler = true, bodyColor = '#548AE7', glassTint = '#bfc5c6' }) {
   const gltf = useGLTF('/bmw_m3.glb')
 
   const wrapperRef = useRef()
@@ -18,6 +18,7 @@ export default function CarModel({ suspensionY = 0, useNewWheels = false, showSp
     let glassGroup = null;
     let wheelSet1 = null;
     let wheelSet2 = null;
+    let wheelSet3 = null;
 
     cloned.traverse((obj) => {
       if (obj.name && obj.name.toLowerCase() === 'body') {
@@ -34,6 +35,9 @@ export default function CarModel({ suspensionY = 0, useNewWheels = false, showSp
       }
       if (obj.name && obj.name.toLowerCase() === 'wheel_set_2') {
         wheelSet2 = obj;
+      }
+      if (obj.name && obj.name.toLowerCase() === 'wheel_set_3') {
+        wheelSet3 = obj;
       }
       if (obj.isMesh) {
         obj.castShadow = true;
@@ -158,9 +162,10 @@ export default function CarModel({ suspensionY = 0, useNewWheels = false, showSp
     if (bodyGroup) bodyGroup.position.y = Math.max(-0.25, Math.min(0.25, suspensionY));
 
     // Handle wheel sets
-    if (wheelSet1 && wheelSet2) {
-      wheelSet1.visible = !useNewWheels;
-      wheelSet2.visible = useNewWheels;
+    if (wheelSet1 && wheelSet2 && wheelSet3) {
+      wheelSet1.visible = wheelSetIndex === 0;
+      wheelSet2.visible = wheelSetIndex === 1;
+      wheelSet3.visible = wheelSetIndex === 2;
     }
 
     // Handle spoiler visibility
@@ -174,7 +179,7 @@ export default function CarModel({ suspensionY = 0, useNewWheels = false, showSp
     wrapper.add(cloned);
     wrapperRef.current = wrapper;
     setSceneReady(true);
-  }, [gltf, bodyColor, glassTint, useNewWheels, showSpoiler, suspensionY]);
+  }, [gltf, bodyColor, glassTint, wheelSetIndex, showSpoiler, suspensionY]);
 
   if (!sceneReady || !wrapperRef.current) return null;
   return <primitive object={wrapperRef.current} />;
