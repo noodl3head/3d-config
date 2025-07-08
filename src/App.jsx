@@ -9,15 +9,13 @@ import {
 import { Suspense, useState, useRef, useEffect } from 'react'
 import * as THREE from 'three'
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader'
-import './ConfiguratorUI.css';
-import ConfiguratorMenu from './ConfiguratorMenu';
 import './ConfiguratorMenu.css';
 
 import CarModel from './CarModel.jsx'
 import citrusHDR from './assets/citrus_orchard_puresky_1k.hdr?url'
-import ConfiguratorUI from './ConfiguratorUI'
 import ShadowPlane from './ShadowPlane'
 import React from 'react';
+import ConfiguratorMenu from './ConfiguratorMenu';
 
 // Helper to force white background every frame
 function ForceWhiteBackground() {
